@@ -97,7 +97,13 @@ const BuildForm = ({ editId }) => {
       }
     } catch (err) {
       console.error("Build API error:", err);
-      toast.error(err.data?.message || "Something went wrong");
+      const res = err?.data;
+
+      if (res?.errors && Array.isArray(res.errors)) {
+        res.errors.forEach((error) => toast.error(error));
+      } else {
+        toast.error(res?.message || "Something went wrong");
+      }
     }
   };
 

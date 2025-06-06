@@ -46,7 +46,6 @@ const MyBuilds = () => {
   };
 
   const handleEdit = (id) => {
-    // Navigate to dashboard with edit param to open BuildForm for that build
     navigate(`/?edit=${id}`);
   };
 
@@ -70,10 +69,16 @@ const MyBuilds = () => {
             <strong>Score:</strong> {build.score}
           </p>
           <ul className="list-disc list-inside">
+            <img
+              src="https://www.memorypc.eu/media/0c/98/4a/1745838104/563472-05-1745838101-secondlast-1745838102.webp"
+              alt=""
+            />
             {Object.entries(build.parts).map(([type, part]) => (
-              <li key={type}>
-                <strong>{type.toUpperCase()}:</strong> {part.name || part}
-              </li>
+              <div className="built-info" key={type}>
+                <li>
+                  <strong>{type.toUpperCase()}:</strong> {part.name || part}
+                </li>
+              </div>
             ))}
           </ul>
           {justUpdatedId === build._id && (

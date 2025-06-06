@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const PartSelectionModal = ({
   partType,
@@ -7,41 +7,68 @@ const PartSelectionModal = ({
   onClose,
   selectedPart,
 }) => {
+  const [expandedNotes, setExpandedNotes] = useState({});
+
+  const toggleNotes = (partId) => {
+    setExpandedNotes((prev) => ({
+      ...prev,
+      [partId]: !prev[partId],
+    }));
+  };
+
   const renderCompatibilityNotes = (part) => {
-    if (!part.compatibleWith || Object.keys(part.compatibleWith).length === 0) {
-      if (partType === "ram") {
-        return <p>Recommended: 16GB or more</p>;
-      } else if (partType === "ssd") {
-        return <p>Recommended: 500GB or more</p>;
-      }
-      return null;
-    }
+    if (!expandedNotes[part._id]) return null;
+
+    const staticHints = {
+      ram: "Min 16GB recommended",
+      ssd: "Min 500gb recommended",
+      powerSupply: "Min 650 wats recomended ",
+    };
+
+    const hasDynamicCompatibility =
+      part.compatibleWith && Object.keys(part.compatibleWith).length > 0;
 
     return (
       <div className="compatibility-info">
         <p>Compatibility Notes:</p>
         <ul>
-          {partType === "cpu" && (
+          {/* Static hints for RAM and PSU */}
+          {staticHints[partType] && <li>{staticHints[partType]}</li>}
+
+          {/* Dynamic compatibility info */}
+          {hasDynamicCompatibility && (
             <>
-              {part.compatibleWith.motherboard && (
-                <li>
-                  Motherboards: {part.compatibleWith.motherboard.join(", ")}
-                </li>
+              {partType === "cpu" && (
+                <>
+                  {part.compatibleWith.motherboard && (
+                    <li>
+                      Motherboards: {part.compatibleWith.motherboard.join(", ")}
+                    </li>
+                  )}
+                  {part.compatibleWith.gpu && (
+                    <li>GPUs: {part.compatibleWith.gpu.join(", ")}</li>
+                  )}
+                </>
               )}
-              {part.compatibleWith.gpu && (
-                <li>GPUs: {part.compatibleWith.gpu.join(", ")}</li>
+
+              {partType === "motherboard" && part.compatibleWith.cpu && (
+                <li>CPUs: {part.compatibleWith.cpu.join(", ")}</li>
+              )}
+
+              {partType === "gpu" && (
+                <>
+                  {part.compatibleWith.powerSupply?.minWattage && (
+                    <li>
+                      Min PSU: {part.compatibleWith.powerSupply.minWattage}W
+                    </li>
+                  )}
+                  {part.compatibleWith.cpu && (
+                    <li>CPUs: {part.compatibleWith.cpu.join(", ")}</li>
+                  )}
+                </>
               )}
             </>
           )}
-
-          {partType === "motherboard" && part.compatibleWith.cpu && (
-            <li>CPUs: {part.compatibleWith.cpu.join(", ")}</li>
-          )}
-
-          {partType === "gpu" &&
-            part.compatibleWith.powerSupply?.minWattage && (
-              <li>Min PSU: {part.compatibleWith.powerSupply.minWattage}W</li>
-            )}
         </ul>
       </div>
     );
@@ -74,6 +101,15 @@ const PartSelectionModal = ({
               <div className="part-info">
                 <h3>{part.name}</h3>
                 <p>Score: {part.scoreValue}</p>
+                <button
+                  className="toggle-notes-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleNotes(part._id);
+                  }}
+                >
+                  {expandedNotes[part._id] ? "Hide Hints" : "Show Hints"}
+                </button>
                 {renderCompatibilityNotes(part)}
               </div>
             </div>
