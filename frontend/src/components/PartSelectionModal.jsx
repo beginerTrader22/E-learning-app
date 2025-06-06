@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const PartSelectionModal = ({
   partType,
@@ -8,6 +8,31 @@ const PartSelectionModal = ({
   selectedPart,
 }) => {
   const [expandedNotes, setExpandedNotes] = useState({});
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!parts || parts.length === 0) {
+      setImagesLoaded(true);
+      return;
+    }
+
+    let loadedCount = 0;
+    const totalImages = parts.length;
+
+    const handleImageLoad = () => {
+      loadedCount++;
+      if (loadedCount === totalImages) {
+        setImagesLoaded(true);
+      }
+    };
+
+    parts.forEach((part) => {
+      const img = new Image();
+      img.src = part.image || "/default-part.png";
+      img.onload = handleImageLoad;
+      img.onerror = handleImageLoad;
+    });
+  }, [parts]);
 
   const toggleNotes = (partId) => {
     setExpandedNotes((prev) => ({
@@ -84,37 +109,41 @@ const PartSelectionModal = ({
           </button>
         </div>
 
-        <div className="parts-list">
-          {parts.map((part) => (
-            <div
-              key={part._id}
-              className={`part-item ${
-                selectedPart?._id === part._id ? "selected" : ""
-              }`}
-              onClick={() => onSelect(part)}
-            >
-              <img
-                src={part.image || "/default-part.png"}
-                alt={part.name}
-                className="part-image"
-              />
-              <div className="part-info">
-                <h3>{part.name}</h3>
-                <p>Score: {part.scoreValue}</p>
-                <button
-                  className="toggle-notes-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleNotes(part._id);
-                  }}
-                >
-                  {expandedNotes[part._id] ? "Hide Hints" : "Show Hints"}
-                </button>
-                {renderCompatibilityNotes(part)}
+        {!imagesLoaded ? (
+          <div className="loading-content">Loading parts...</div>
+        ) : (
+          <div className="parts-list">
+            {parts.map((part) => (
+              <div
+                key={part._id}
+                className={`part-item ${
+                  selectedPart?._id === part._id ? "selected" : ""
+                }`}
+                onClick={() => onSelect(part)}
+              >
+                <img
+                  src={part.image || "/default-part.png"}
+                  alt={part.name}
+                  className="part-image"
+                />
+                <div className="part-info">
+                  <h3>{part.name}</h3>
+                  <p>Score: {part.scoreValue}</p>
+                  <button
+                    className="toggle-notes-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleNotes(part._id);
+                    }}
+                  >
+                    {expandedNotes[part._id] ? "Hide Hints" : "Show Hints"}
+                  </button>
+                  {renderCompatibilityNotes(part)}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

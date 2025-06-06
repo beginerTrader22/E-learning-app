@@ -145,3 +145,9 @@
 img{
   width: 500px;
 }
+
+.loading-content {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.2rem;
+}
