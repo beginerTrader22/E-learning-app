@@ -70,10 +70,6 @@
   transition: all 0.2s;
 }
 
-.select-btn {
-  background: #edf2f7;
-  color: #2d3748;
-}
 
 .select-btn:hover {
   background: #676869;

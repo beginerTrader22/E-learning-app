@@ -54,12 +54,10 @@ const BuildForm = ({ editId }) => {
             const img = new Image();
             img.src = part.image;
             img.onload = () => {
-              loadStatus[key] = true;
-              setImagesLoaded({ ...loadStatus });
+              setImagesLoaded((prev) => ({ ...prev, [key]: true }));
             };
             img.onerror = () => {
-              loadStatus[key] = true;
-              setImagesLoaded({ ...loadStatus });
+              setImagesLoaded((prev) => ({ ...prev, [key]: true }));
             };
           }
         });
@@ -79,6 +77,25 @@ const BuildForm = ({ editId }) => {
       ...prev,
       [partType]: part,
     }));
+
+    // Reset the loaded state for this part type
+    setImagesLoaded((prev) => ({ ...prev, [partType]: false }));
+
+    // Load the new image
+    if (part?.image) {
+      const img = new Image();
+      img.src = part.image;
+      img.onload = () => {
+        setImagesLoaded((prev) => ({ ...prev, [partType]: true }));
+      };
+      img.onerror = () => {
+        setImagesLoaded((prev) => ({ ...prev, [partType]: true }));
+      };
+    } else {
+      // If no image, mark as loaded
+      setImagesLoaded((prev) => ({ ...prev, [partType]: true }));
+    }
+
     setActiveModal(null);
   };
 
@@ -188,7 +205,7 @@ const BuildForm = ({ editId }) => {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {!imagesLoaded[key] ? (
+                  {imagesLoaded[key] !== true ? (
                     <div className="image-placeholder">
                       <div className="loading-spinner small"></div>
                     </div>
@@ -200,6 +217,9 @@ const BuildForm = ({ editId }) => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.5 }}
+                      onError={(e) => {
+                        e.target.src = "/default-part.png";
+                      }}
                     />
                   )}
                   <p>{selectedParts[key].name}</p>
