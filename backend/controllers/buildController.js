@@ -4,7 +4,10 @@ const Part = require('../models/partModel');
 
 const checkCompatibility = async (parts) => {
   // Get all parts at once for efficiency
-  const partDocs = await Part.find({ _id: { $in: Object.values(parts) } });
+  const partIds = Object.values(parts).filter(id => id);
+  if (partIds.length !== 6) return false; // All 6 parts must be selected
+  
+  const partDocs = await Part.find({ _id: { $in: partIds } });
   
   // Create a map for easy access
   const partsMap = {};
@@ -12,29 +15,51 @@ const checkCompatibility = async (parts) => {
     partsMap[part._id.toString()] = part;
   });
 
-  // Check CPU-Motherboard compatibility
+  // Check if we have all parts
+  if (Object.keys(partsMap).length !== partIds.length) {
+    return false;
+  }
+
+  // Get all the parts for easier access
   const cpu = partsMap[parts.cpu];
   const motherboard = partsMap[parts.motherboard];
-  
+  const gpu = partsMap[parts.gpu];
+  const powerSupply = partsMap[parts.powerSupply];
+
+  // 1. Check CPU-Motherboard compatibility
   if (cpu && motherboard) {
-    const compatibleSockets = cpu.compatibleWith?.motherboard || [];
-    if (!compatibleSockets.includes(motherboard.compatibleWith?.cpu?.[0])) {
+    // CPU's compatible motherboards should include this motherboard's name
+    const cpuCompatibleMobos = cpu.compatibleWith?.motherboard || [];
+    if (!cpuCompatibleMobos.includes(motherboard.name)) {
+      return false;
+    }
+
+    // Motherboard's compatible CPUs should include this CPU's name
+    const moboCompatibleCPUs = motherboard.compatibleWith?.cpu || [];
+    if (!moboCompatibleCPUs.includes(cpu.name)) {
       return false;
     }
   }
 
-  // Check GPU-PowerSupply compatibility
-  const gpu = partsMap[parts.gpu];
-  const powerSupply = partsMap[parts.powerSupply];
-  
+  // 2. Check CPU-GPU compatibility (if specified)
+  if (cpu && gpu) {
+    const cpuCompatibleGPUs = cpu.compatibleWith?.gpu || [];
+    if (cpuCompatibleGPUs.length > 0 && !cpuCompatibleGPUs.includes(gpu.name)) {
+      return false;
+    }
+  }
+
+  // 3. Check GPU-PowerSupply compatibility
   if (gpu && powerSupply) {
     const minWattage = gpu.compatibleWith?.powerSupply?.minWattage || 0;
-    const psuWattage = parseInt(powerSupply.name.match(/\d+/)?.[0] || 0);
+    // Extract wattage from power supply name (e.g., "Corsair RM750x 750W" → 750)
+   const psuWattage = parseInt(powerSupply.name.match(/\d+/)?.[0] || 0);
     if (psuWattage < minWattage) {
       return false;
     }
   }
 
+  // All compatibility checks passed
   return true;
 };
 

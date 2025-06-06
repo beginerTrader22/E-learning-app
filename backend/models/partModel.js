@@ -6,8 +6,13 @@ const partSchema = mongoose.Schema({
   name: { type: String, required: true },
   compatibleWith: {
     cpu: [{ type: String }],
+    gpu: [{ type: String }],
     motherboard: [{ type: String }],
     powerSupply: { minWattage: Number }
+  },
+    image: {
+    type: String,
+    default: '/default-part.png' // Default image if none provided
   },
   scoreValue: { type: Number, default: 0 }
 }, { timestamps: true });
