@@ -8,13 +8,13 @@ const registerUser = asyncHandler(async(req, res) =>{
     const { name, email, password} = req.body;
     if (!name || !email || !password){
         res.status(400)
-        throw new Error('Fields are empty')
+        throw new Error('Fushat jane bosh')
     }
 
     const userExists = await User.findOne({email});
     if (userExists) {
         res.status(400);
-        throw new Error ('User Exists')
+        throw new Error ('Ky perdorues ekziston')
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -30,7 +30,7 @@ const registerUser = asyncHandler(async(req, res) =>{
     }
     else{
         res.status(400)
-        throw new Error ('Invalid user data')
+        throw new Error ('Te dhena jo te sakta')
     }
 })
 
@@ -48,7 +48,7 @@ const loginUser = asyncHandler(async(req, res) =>{
     }
     else{
         res.status(400);
-        throw new Error('invalid data')
+        throw new Error('Te dhena jo te sakta')
     }
 
 })

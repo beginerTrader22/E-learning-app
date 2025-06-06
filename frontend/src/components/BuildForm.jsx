@@ -30,6 +30,21 @@ const BuildForm = ({ editId }) => {
   const [activeModal, setActiveModal] = useState(null);
   const [imagesLoaded, setImagesLoaded] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  useEffect(() => {
+    if (!editId) {
+      // Reset form when not in edit mode
+      setSelectedParts({
+        cpu: null,
+        ram: null,
+        gpu: null,
+        ssd: null,
+        motherboard: null,
+        powerSupply: null,
+      });
+      setOriginalParts(null);
+      setImagesLoaded({});
+    }
+  }, [editId]);
 
   useEffect(() => {
     if (editId && builds) {
@@ -106,7 +121,7 @@ const BuildForm = ({ editId }) => {
     // Validate all parts selected
     for (const key of Object.keys(selectedParts)) {
       if (!selectedParts[key]) {
-        toast.error(`Please select a ${key}`);
+        toast.error(`Ju lutem selektoni nje ${key}`);
         setIsSubmitting(false);
         return;
       }
@@ -114,7 +129,7 @@ const BuildForm = ({ editId }) => {
 
     // If editing and no change, block update
     if (editId && isFormUnchanged()) {
-      toast.info("No changes made to the build.");
+      toast.info("Nuk keni bere ndryshime ne kompiuter");
       setIsSubmitting(false);
       return;
     }
@@ -128,13 +143,13 @@ const BuildForm = ({ editId }) => {
     try {
       if (editId) {
         await updateBuild({ id: editId, data: buildData }).unwrap();
-        toast.success("Build updated");
+        toast.success("Kompiuteri u be update me pjeset e reja");
         setTimeout(() => {
           navigate(`/my-builds?updated=${editId}`);
         }, 500);
       } else {
         await createBuild(buildData).unwrap();
-        toast.success("Build created");
+        toast.success("Kompiuteri u krijua");
         navigate(`/my-builds`);
       }
     } catch (err) {
@@ -143,7 +158,7 @@ const BuildForm = ({ editId }) => {
       if (res?.errors && Array.isArray(res.errors)) {
         res.errors.forEach((error) => toast.error(error));
       } else {
-        toast.error(res?.message || "Something went wrong");
+        toast.error(res?.message || "Dicka shkoi keq");
       }
     } finally {
       setIsSubmitting(false);
@@ -151,19 +166,19 @@ const BuildForm = ({ editId }) => {
   };
 
   const partTypes = [
-    { key: "cpu", name: "CPU" },
-    { key: "motherboard", name: "Motherboard" },
-    { key: "ram", name: "RAM" },
-    { key: "gpu", name: "GPU" },
-    { key: "ssd", name: "SSD" },
-    { key: "powerSupply", name: "Power Supply" },
+    { key: "cpu", name: "Procesori" },
+    { key: "motherboard", name: "MotherBordi" },
+    { key: "ram", name: "Memorja (RAM)" },
+    { key: "gpu", name: "Karta Grafike" },
+    { key: "ssd", name: "Magazina (SSD)" },
+    { key: "powerSupply", name: "Ushqyesi" },
   ];
 
   if (loadingParts) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <p>Loading parts data...</p>
+        <p>Duke u ngrakuar...</p>
       </div>
     );
   }
@@ -230,7 +245,7 @@ const BuildForm = ({ editId }) => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    Change
+                    Ndrysho Pjesen
                   </motion.button>
                 </motion.div>
               ) : (
@@ -241,7 +256,7 @@ const BuildForm = ({ editId }) => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Select {name}
+                  Zgjidh {name}
                 </motion.button>
               )}
             </motion.div>
@@ -264,12 +279,12 @@ const BuildForm = ({ editId }) => {
             {isSubmitting ? (
               <span className="btn-loading">
                 <span className="spinner"></span>
-                {editId ? "Updating..." : "Creating..."}
+                {editId ? "Duke u perditsuar..." : "Duke krijuar..."}
               </span>
             ) : editId ? (
-              "Update Build"
+              "Perditeso Ndryshimet"
             ) : (
-              "Create Build"
+              "Krijo Kompiuter"
             )}
           </motion.button>
           {editId && (
@@ -280,7 +295,7 @@ const BuildForm = ({ editId }) => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              Cancel
+              Anullo veprimin
             </motion.button>
           )}
         </motion.div>

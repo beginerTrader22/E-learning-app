@@ -58,10 +58,10 @@ const MyBuilds = () => {
   const handleDelete = async (id) => {
     try {
       await deleteBuild(id).unwrap();
-      toast.success("Build deleted");
+      toast.success("Kompiuteri u fshi me sukses");
       refetch();
     } catch {
-      toast.error("Error deleting build");
+      toast.error("Pati error");
     }
   };
 
@@ -76,7 +76,7 @@ const MyBuilds = () => {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <p>Loading your builds...</p>
+        <p>Duke ngarkuar...</p>
       </div>
     );
   }
@@ -89,10 +89,10 @@ const MyBuilds = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <h2>No builds created yet</h2>
-        <p>Start by creating your first build!</p>
+        <h2>Nuk keni krijuar asnje kompiuter akoma</h2>
+        <p>Fillo duke krijuar kompiuterin tend te pare</p>
         <button onClick={() => navigate("/")} className="btn-primary">
-          Create Build
+          Krijo Kompiuter
         </button>
       </motion.div>
     );
@@ -106,7 +106,7 @@ const MyBuilds = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        Welcome, {user?.name || "User"}!
+        Mire se vini, {user?.name || "User"}!
       </motion.h2>
 
       <motion.div
@@ -145,7 +145,7 @@ const MyBuilds = () => {
 
               <div className="build-content">
                 <div className="build-score">
-                  <span>Score:</span>
+                  <span>Piket: </span>
                   <span className="score-value">{build.score}</span>
                 </div>
 
@@ -170,7 +170,7 @@ const MyBuilds = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                   >
-                    Build updated successfully!
+                    Buildi u perditesua!
                   </motion.div>
                 )}
 
@@ -182,7 +182,9 @@ const MyBuilds = () => {
                     whileTap={{ scale: 0.95 }}
                     disabled={!imagesLoaded[build._id]}
                   >
-                    {imagesLoaded[build._id] ? "Edit" : "Loading..."}
+                    {imagesLoaded[build._id]
+                      ? "Ndrysho pjeset"
+                      : "Duke u ngarkuar..."}
                   </motion.button>
                   <motion.button
                     onClick={() => handleDelete(build._id)}
@@ -190,7 +192,7 @@ const MyBuilds = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    Delete
+                    Fshi
                   </motion.button>
                 </div>
               </div>

@@ -25,7 +25,7 @@ const PartSelectionModal = ({
     const handleImageLoad = () => {
       loadedCount++;
       if (loadedCount === totalImages) {
-        setTimeout(() => setImagesLoaded(true), 300); // Small delay for smoothness
+        setTimeout(() => setImagesLoaded(true), 300);
       }
     };
 
@@ -86,9 +86,10 @@ const PartSelectionModal = ({
 
   const renderCompatibilityNotes = (part) => {
     const staticHints = {
-      ram: "Min 16GB recommended",
-      ssd: "Min 500gb recommended",
-      powerSupply: "Min 650 wats recommended",
+      ram: "Rekomandohet 16gb ram minimumi",
+      ssd: "Rekomandohet 500gb minimumi",
+      powerSupply:
+        "Shiko te karta grafike te shohesh se cila  rekomandohet, por min 650W patjeter",
     };
 
     const hasDynamicCompatibility =
@@ -109,27 +110,28 @@ const PartSelectionModal = ({
               {partType === "cpu" && (
                 <>
                   {part.compatibleWith.motherboard && (
-                    <li>
-                      Motherboards: {part.compatibleWith.motherboard.join(", ")}
-                    </li>
+                    <li>Bordi: {part.compatibleWith.motherboard.join(", ")}</li>
                   )}
                   {part.compatibleWith.gpu && (
-                    <li>GPUs: {part.compatibleWith.gpu.join(", ")}</li>
+                    <li>Karta Grafike: {part.compatibleWith.gpu.join(", ")}</li>
                   )}
                 </>
               )}
               {partType === "motherboard" && part.compatibleWith.cpu && (
-                <li>CPUs: {part.compatibleWith.cpu.join(", ")}</li>
+                <li>
+                  Procesore qe pershtaten {part.compatibleWith.cpu.join(", ")}
+                </li>
               )}
               {partType === "gpu" && (
                 <>
                   {part.compatibleWith.powerSupply?.minWattage && (
                     <li>
-                      Min PSU: {part.compatibleWith.powerSupply.minWattage}W
+                      Ushqyesit me fuqi:{" "}
+                      {part.compatibleWith.powerSupply.minWattage}W
                     </li>
                   )}
                   {part.compatibleWith.cpu && (
-                    <li>CPUs: {part.compatibleWith.cpu.join(", ")}</li>
+                    <li>Procesore: {part.compatibleWith.cpu.join(", ")}</li>
                   )}
                 </>
               )}
@@ -165,7 +167,7 @@ const PartSelectionModal = ({
             &times;
           </motion.button>
           <div className="modal-header">
-            <h2>Select {partType}</h2>
+            <h2>Zgjidh {partType}</h2>
           </div>
 
           {!imagesLoaded ? (
@@ -180,7 +182,7 @@ const PartSelectionModal = ({
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
               />
-              <p>Loading parts...</p>
+              <p>Duke u ngarkuar...</p>
             </motion.div>
           ) : (
             <div className="parts-list">
@@ -208,7 +210,7 @@ const PartSelectionModal = ({
                   />
                   <div className="part-info">
                     <h3>{part.name}</h3>
-                    <p>Score: {part.scoreValue}</p>
+                    <p>Piket: {part.scoreValue}</p>
 
                     <motion.button
                       className="toggle-notes-btn"
@@ -219,7 +221,9 @@ const PartSelectionModal = ({
                     >
                       {" "}
                       <FaLightbulb />
-                      {expandedNotes[part._id] ? "Hide Hints" : "Show Hints"}
+                      {expandedNotes[part._id]
+                        ? "Fshih pjeset qe pershtaten"
+                        : "Trego pjeset qe pershtaten"}
                     </motion.button>
 
                     {renderCompatibilityNotes(part)}

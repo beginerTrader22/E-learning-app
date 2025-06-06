@@ -7,7 +7,7 @@ const checkCompatibility = async (parts) => {
 
   const partIds = Object.values(parts).filter(id => id);
   if (partIds.length !== 6) {
-    errors.push('All 6 parts must be selected');
+    errors.push('Te gjitha pjeset duhet te selektohen');
     return { compatible: false, errors };
   }
 
@@ -19,7 +19,7 @@ const checkCompatibility = async (parts) => {
   });
 
   if (Object.keys(partsMap).length !== partIds.length) {
-    errors.push('Some selected parts were not found');
+    errors.push('disa pjese nuk u gjeten');
     return { compatible: false, errors };
   }
 
@@ -34,11 +34,11 @@ const checkCompatibility = async (parts) => {
     const moboCompatibleCPUs = motherboard.compatibleWith?.cpu || [];
 
     if (!cpuCompatibleMobos.includes(motherboard.name)) {
-      errors.push(`CPU (${cpu.name}) is not compatible with Motherboard (${motherboard.name})`);
+      errors.push(`Procesori (${cpu.name}) nuk pershtatet me bordin (${motherboard.name})`);
     }
 
     if (!moboCompatibleCPUs.includes(cpu.name)) {
-      errors.push(`Motherboard (${motherboard.name}) is not compatible with CPU (${cpu.name})`);
+      errors.push(`Bordi (${motherboard.name}) nuk pershtaet me procesorin (${cpu.name})`);
     }
   }
 
@@ -46,7 +46,7 @@ const checkCompatibility = async (parts) => {
   if (cpu && gpu) {
     const cpuCompatibleGPUs = cpu.compatibleWith?.gpu || [];
     if (cpuCompatibleGPUs.length > 0 && !cpuCompatibleGPUs.includes(gpu.name)) {
-      errors.push(`CPU (${cpu.name}) is not compatible with GPU (${gpu.name})`);
+      errors.push(`Procesori (${cpu.name}) nuk pershtatet me karten grafike (${gpu.name})`);
     }
   }
 
@@ -55,7 +55,7 @@ const checkCompatibility = async (parts) => {
     const minWattage = gpu.compatibleWith?.powerSupply?.minWattage || 0;
     const psuWattage = parseInt(powerSupply.name.match(/\d+/)?.[0] || 0);
     if (psuWattage < minWattage) {
-      errors.push(`Power Supply (${powerSupply.name}) wattage is too low for GPU (${gpu.name}) – requires at least ${minWattage}W`);
+      errors.push(`Ushqyesi (${powerSupply.name}) eshte shum i dobet per karten grafike (${gpu.name}) – Duhen te pakten ${minWattage}W`);
     }
   }
 
@@ -75,12 +75,12 @@ const createBuild = asyncHandler(async (req, res) => {
 
   if (!parts || !parts.cpu || !parts.ram || !parts.gpu || !parts.ssd || !parts.motherboard || !parts.powerSupply) {
     res.status(400);
-    throw new Error('All parts are required');
+    throw new Error('Te gjitha pjeset jane te nevojshme');
   }
 
   const { compatible, errors } = await checkCompatibility(parts);
   if (!compatible) {
-    res.status(400).json({ message: 'Compatibility check failed', errors });
+    res.status(400).json({ message: 'Pjeset nuk pershtaten', errors });
     return;
   }
 
@@ -105,11 +105,11 @@ const deleteBuild = asyncHandler(async (req, res) => {
 
   if (!build || build.user.toString() !== req.user.id) {
     res.status(401);
-    throw new Error('Unauthorized or Build not found');
+    throw new Error('Nuk je i autorizuar ose pc nuk gjendet');
   }
 
   await build.deleteOne();
-  res.status(200).json({ message: 'Build deleted' });
+  res.status(200).json({ message: 'Kompiuteri u fshi' });
 });
 
 const updateBuild = asyncHandler(async (req, res) => {
@@ -117,13 +117,13 @@ const updateBuild = asyncHandler(async (req, res) => {
 
   if (!build || build.user.toString() !== req.user.id) {
     res.status(401);
-    throw new Error('Unauthorized or Build not found');
+    throw new Error('Nuk je i autorizuar ose pc nuk gjendet');
   }
 
   const { parts } = req.body;
   const { compatible, errors } = await checkCompatibility(parts);
   if (!compatible) {
-    res.status(400).json({ message: 'Compatibility check failed', errors });
+    res.status(400).json({ message: 'Pjeset nuk pershtaten', errors });
     return;
   }
 

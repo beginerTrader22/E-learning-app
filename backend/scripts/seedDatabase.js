@@ -251,7 +251,7 @@ gpu: [
       name: 'MSI Z690 PRO',
       scoreValue: 27,
       image: 'https://asset.msi.com/resize/image/global/product/product_17011617939d6202da2891bc20ecae8fb3682781dc.png62405b38c58fe0f07fcef2367d8a9ba1/1024.png',
-      compatibleWith: { cpu: ['Intel Core i7-12700K', 'Intel Core i9-12900K'] }
+      compatibleWith: { cpu: ['Intel Core i7-12700K' ] }
     },
     {
       _id: 'mobo6',

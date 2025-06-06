@@ -39,16 +39,16 @@ const Login = () => {
         toast.error(
           response.error.data?.message ||
             response.error.error ||
-            "Registration failed"
+            "Regjistrimi Deshtoi"
         );
       } else {
         dispatch(setUser(response.data));
         localStorage.setItem("user", JSON.stringify(response.data));
         navigate("/my-builds");
-        toast.success(`Welcome ${response.data.name}!`);
+        toast.success(`Mire se vini ${response.data.name}!`);
       }
     } catch (err) {
-      console.error("Login failed", err);
+      console.error("Hyrja Deshtoi", err);
     }
   };
 
@@ -56,9 +56,9 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-header">
         <h1 className="auth-title">
-          <FaSignInAlt className="auth-icon" /> Login
+          <FaSignInAlt className="auth-icon" /> Hyr
         </h1>
-        <p className="auth-subtitle">Please Log In</p>
+        <p className="auth-subtitle">Ju lutem logohuni per te bere veprime</p>
       </div>
 
       <div className="auth-form-container">
@@ -71,7 +71,7 @@ const Login = () => {
               id="email"
               name="email"
               value={email}
-              placeholder="Enter Email"
+              placeholder="Vendos email"
               onChange={onChange}
             />
           </div>
@@ -83,7 +83,7 @@ const Login = () => {
               id="password"
               name="password"
               value={password}
-              placeholder="Enter Password"
+              placeholder="Vendos password"
               onChange={onChange}
             />
           </div>
@@ -94,7 +94,7 @@ const Login = () => {
               disabled={isLoading}
               className="submit-button"
             >
-              {isLoading ? "Please wait..." : "Login"}
+              {isLoading ? "Ju lutem prisni..." : "Hyr"}
             </button>
           </div>
         </form>

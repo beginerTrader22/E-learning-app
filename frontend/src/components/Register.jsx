@@ -29,20 +29,20 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== password2) {
-      toast.error("Passwords do not match");
+      toast.error("Pasuoret nuk jane te njejte");
     } else {
       const response = await register(formData);
       if (response.error) {
         toast.error(
           response.error.data?.message ||
             response.error.error ||
-            "Registration failed"
+            "Regjistrimi deshtoi"
         );
       } else {
         dispatch(setUser(response.data));
         localStorage.setItem("user", JSON.stringify(response.data));
         navigate("/");
-        toast.success("Registration successful!");
+        toast.success("Regjistrimi u krye me sukses");
       }
     }
   };
@@ -51,9 +51,9 @@ const Register = () => {
     <div className="auth-container">
       <div className="auth-header">
         <h1 className="auth-title">
-          <FaUser className="auth-icon" /> Register
+          <FaUser className="auth-icon" /> Regjistrohu
         </h1>
-        <p className="auth-subtitle">Please create an account</p>
+        <p className="auth-subtitle">Ju lutem krijoni nje profil/llogari</p>
       </div>
 
       <div className="auth-form-container">
@@ -65,7 +65,7 @@ const Register = () => {
               id="name"
               name="name"
               value={name}
-              placeholder="Enter Name"
+              placeholder="Vendos emrin"
               onChange={onChange}
             />
           </div>
@@ -77,7 +77,7 @@ const Register = () => {
               id="email"
               name="email"
               value={email}
-              placeholder="Enter Email"
+              placeholder="Vendos emailin"
               onChange={onChange}
             />
           </div>
@@ -89,7 +89,7 @@ const Register = () => {
               id="password"
               name="password"
               value={password}
-              placeholder="Enter Password"
+              placeholder="Vendos pasuordin"
               onChange={onChange}
             />
           </div>
@@ -101,7 +101,7 @@ const Register = () => {
               id="password2"
               name="password2"
               value={password2}
-              placeholder="Confirm Password"
+              placeholder="Konfirmo pasourdin e vendosur lart"
               onChange={onChange}
             />
           </div>
@@ -112,7 +112,7 @@ const Register = () => {
               className="submit-button"
               disabled={isLoading}
             >
-              {isLoading ? "Processing..." : "Register"}
+              {isLoading ? "Duke procesuar.." : "Regjistrohu"}
             </button>
           </div>
         </form>

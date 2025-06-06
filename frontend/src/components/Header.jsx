@@ -20,22 +20,22 @@ const Header = () => {
     <header className="app-header">
       <div className="header-logo">
         <Link to="/" className="logo-link">
-          Create New Built
+          Krijo nje Kompiuter te Ri
         </Link>
       </div>
-      <h2>Pc Builder Pro</h2>
+      <h2>Ndertuesi i kompiuterave</h2>
       <nav className="header-nav">
         <ul className="nav-list">
           {user ? (
             <>
               <li className="nav-item">
                 <Link to="/my-builds" className="nav-link">
-                  My Builds
+                  Kompiuterat e Mi
                 </Link>
               </li>
               <li className="nav-item">
                 <button className="logout-button" onClick={handleLogout}>
-                  <FaSignOutAlt className="nav-icon" /> Logout
+                  <FaSignOutAlt className="nav-icon" /> Dil
                 </button>
               </li>
             </>
@@ -43,12 +43,12 @@ const Header = () => {
             <>
               <li className="nav-item">
                 <Link to="/login" className="nav-link">
-                  <FaSignInAlt className="nav-icon" /> Login
+                  <FaSignInAlt className="nav-icon" /> Hyr
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/register" className="nav-link">
-                  <FaUser className="nav-icon" /> Register
+                  <FaUser className="nav-icon" /> Regjistrohu
                 </Link>
               </li>
             </>
