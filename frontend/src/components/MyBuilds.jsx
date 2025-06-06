@@ -6,13 +6,15 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
+import "../MyBuilds.css";
 
 const MyBuilds = () => {
   const { data: builds = [], isLoading, refetch } = useGetBuildsQuery();
   const [deleteBuild] = useDeleteBuildMutation();
   const navigate = useNavigate();
-  // Track which build was just updated to show notification
   const [justUpdatedId, setJustUpdatedId] = useState(null);
+  const [imagesLoaded, setImagesLoaded] = useState({});
   const { user } = useSelector((state) => state.user);
 
   // Check URL param "updated" to highlight build just updated
@@ -21,11 +23,8 @@ const MyBuilds = () => {
     const updatedId = params.get("updated");
     if (updatedId) {
       setJustUpdatedId(updatedId);
-
-      // Clear the param after 3 seconds so notification disappears
       setTimeout(() => {
         setJustUpdatedId(null);
-        // Optionally remove updated param from URL without reload
         params.delete("updated");
         const newUrl =
           window.location.pathname +
@@ -34,6 +33,27 @@ const MyBuilds = () => {
       }, 3000);
     }
   }, []);
+
+  // Preload images for all builds
+  useEffect(() => {
+    if (!builds || builds.length === 0) return;
+
+    const loadStatus = {};
+    builds.forEach((build) => {
+      loadStatus[build._id] = false;
+      const img = new Image();
+      img.src =
+        "https://www.memorypc.eu/media/0c/98/4a/1745838104/563472-05-1745838101-secondlast-1745838102.webp";
+      img.onload = () => {
+        loadStatus[build._id] = true;
+        setImagesLoaded({ ...loadStatus });
+      };
+      img.onerror = () => {
+        loadStatus[build._id] = true;
+        setImagesLoaded({ ...loadStatus });
+      };
+    });
+  }, [builds]);
 
   const handleDelete = async (id) => {
     try {
@@ -46,59 +66,138 @@ const MyBuilds = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/?edit=${id}`);
+    // Wait for images to load before navigating
+    if (imagesLoaded[id]) {
+      navigate(`/?edit=${id}`);
+    }
   };
 
-  if (isLoading) return <p>Loading builds...</p>;
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading your builds...</p>
+      </div>
+    );
+  }
 
-  if (builds.length === 0) return <p>No builds created yet.</p>;
+  if (builds.length === 0) {
+    return (
+      <motion.div
+        className="empty-state"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2>No builds created yet</h2>
+        <p>Start by creating your first build!</p>
+        <button onClick={() => navigate("/")} className="btn-primary">
+          Create Build
+        </button>
+      </motion.div>
+    );
+  }
 
   return (
-    <div className="grid gap-4">
-      <h2 className="text-xl font-bold mb-4">
+    <div className="builds-container">
+      <motion.h2
+        className="welcome-heading"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
         Welcome, {user?.name || "User"}!
-      </h2>
-      {builds.map((build) => (
-        <div
-          key={build._id}
-          className={`p-4 border rounded shadow ${
-            justUpdatedId === build._id ? "border-green-500 bg-green-100" : ""
-          }`}
-        >
-          <p>
-            <strong>Score:</strong> {build.score}
-          </p>
-          <ul className="list-disc list-inside">
-            <img
-              src="https://www.memorypc.eu/media/0c/98/4a/1745838104/563472-05-1745838101-secondlast-1745838102.webp"
-              alt=""
-            />
-            {Object.entries(build.parts).map(([type, part]) => (
-              <div className="built-info" key={type}>
-                <li>
-                  <strong>{type.toUpperCase()}:</strong> {part.name || part}
-                </li>
-              </div>
-            ))}
-          </ul>
-          {justUpdatedId === build._id && (
-            <p className="text-green-700 font-semibold mt-2">
-              Build updated successfully!
-            </p>
-          )}
-          <div className="mt-2 space-x-2">
-            <button onClick={() => handleEdit(build._id)} className="btn">
-              Edit
-            </button>
-            <button
-              onClick={() => handleDelete(build._id)}
-              className="btn btn-danger"
+      </motion.h2>
+
+      <motion.div
+        className="builds-grid"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+      >
+        <AnimatePresence>
+          {builds.map((build, index) => (
+            <motion.div
+              key={build._id}
+              className={`build-card ${
+                justUpdatedId === build._id ? "updated" : ""
+              }`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ delay: index * 0.1, duration: 0.3 }}
+              whileHover={{ scale: 1.02 }}
             >
-              Delete
-            </button>
-          </div>
-        </div>
-      ))}
+              {!imagesLoaded[build._id] ? (
+                <div className="image-placeholder">
+                  <div className="loading-spinner small"></div>
+                </div>
+              ) : (
+                <motion.img
+                  src="https://www.memorypc.eu/media/0c/98/4a/1745838104/563472-05-1745838101-secondlast-1745838102.webp"
+                  alt="PC build"
+                  className="build-image"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                />
+              )}
+
+              <div className="build-content">
+                <div className="build-score">
+                  <span>Score:</span>
+                  <span className="score-value">{build.score}</span>
+                </div>
+
+                <ul className="parts-list">
+                  {Object.entries(build.parts).map(([type, part]) => (
+                    <motion.li
+                      key={type}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 + index * 0.05 }}
+                    >
+                      <span className="part-type">{type.toUpperCase()}:</span>
+                      <span className="part-name">{part.name || part}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+
+                {justUpdatedId === build._id && (
+                  <motion.div
+                    className="update-notification"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    Build updated successfully!
+                  </motion.div>
+                )}
+
+                <div className="build-actions">
+                  <motion.button
+                    onClick={() => handleEdit(build._id)}
+                    className="btn-edit"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    disabled={!imagesLoaded[build._id]}
+                  >
+                    {imagesLoaded[build._id] ? "Edit" : "Loading..."}
+                  </motion.button>
+                  <motion.button
+                    onClick={() => handleDelete(build._id)}
+                    className="btn-delete"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Delete
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 };
