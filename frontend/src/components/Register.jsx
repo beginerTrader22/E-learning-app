@@ -1,7 +1,5 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { FaUser } from "react-icons/fa";
-
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -31,7 +29,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== password2) {
-      toast.error("Passwords are different");
+      toast.error("Passwords do not match");
     } else {
       const response = await register(formData);
       if (response.error) {
@@ -50,18 +48,20 @@ const Register = () => {
   };
 
   return (
-    <>
-      <section className="heading">
-        <h1> {<FaUser />} Register</h1>
-        <p>Please create an accaunt</p>
-      </section>
+    <div className="auth-container">
+      <div className="auth-header">
+        <h1 className="auth-title">
+          <FaUser className="auth-icon" /> Register
+        </h1>
+        <p className="auth-subtitle">Please create an account</p>
+      </div>
 
-      <section className="form">
-        <form onSubmit={handleSubmit}>
+      <div className="auth-form-container">
+        <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <input
               type="text"
-              className="form-control"
+              className="form-input"
               id="name"
               name="name"
               value={name}
@@ -73,7 +73,7 @@ const Register = () => {
           <div className="form-group">
             <input
               type="email"
-              className="form-control"
+              className="form-input"
               id="email"
               name="email"
               value={email}
@@ -85,7 +85,7 @@ const Register = () => {
           <div className="form-group">
             <input
               type="password"
-              className="form-control"
+              className="form-input"
               id="password"
               name="password"
               value={password}
@@ -97,7 +97,7 @@ const Register = () => {
           <div className="form-group">
             <input
               type="password"
-              className="form-control"
+              className="form-input"
               id="password2"
               name="password2"
               value={password2}
@@ -109,15 +109,15 @@ const Register = () => {
           <div className="form-group">
             <button
               type="submit"
-              className="btn btn-block"
+              className="submit-button"
               disabled={isLoading}
             >
-              {isLoading ? "Please Wait..." : "Register"}
+              {isLoading ? "Processing..." : "Register"}
             </button>
           </div>
         </form>
-      </section>
-    </>
+      </div>
+    </div>
   );
 };
 

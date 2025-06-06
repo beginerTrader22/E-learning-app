@@ -51,9 +51,13 @@
   margin-bottom: 1rem;
   font-size: 1.1rem;
 }
+.build-score span{
+  font-weight: bolder;
+}
 
 .score-value {
-  font-weight: 600;
+  font-weight: 700;
+  font-family: var(--font-secondary);
   color: #4299e1;
 }
 
@@ -64,19 +68,23 @@
 }
 
 .parts-list li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #edf2f7;
+  margin-bottom: 20px;
+ font-family: var(--font-secondary);
   display: flex;
   justify-content: space-between;
+  gap: 20px;
+  font-weight: bold;
 }
 
 .part-type {
-  font-weight: 500;
+  font-weight: bold;
   color: #4a5568;
 }
 
 .part-name {
   color: #718096;
+  text-align: right;
+  
 }
 
 .update-notification {
@@ -99,8 +107,8 @@
   flex: 1;
   padding: 0.75rem;
   border: none;
+  font-size: 16px;
   border-radius: 6px;
-  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -184,7 +192,6 @@
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 6px;
-  font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;
 }

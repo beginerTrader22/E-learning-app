@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaLightbulb } from "react-icons/fa";
 import "../Modal.css";
 
 const PartSelectionModal = ({
@@ -101,7 +102,6 @@ const PartSelectionModal = ({
         animate={expandedNotes[part._id] ? "visible" : "hidden"}
         exit="hidden"
       >
-        <p>Compatibility Notes:</p>
         <ul>
           {staticHints[partType] && <li>{staticHints[partType]}</li>}
           {hasDynamicCompatibility && (
@@ -209,6 +209,7 @@ const PartSelectionModal = ({
                   <div className="part-info">
                     <h3>{part.name}</h3>
                     <p>Score: {part.scoreValue}</p>
+
                     <motion.button
                       className="toggle-notes-btn"
                       onClick={(e) => {
@@ -216,8 +217,11 @@ const PartSelectionModal = ({
                         toggleNotes(part._id);
                       }}
                     >
+                      {" "}
+                      <FaLightbulb />
                       {expandedNotes[part._id] ? "Hide Hints" : "Show Hints"}
                     </motion.button>
+
                     {renderCompatibilityNotes(part)}
                   </div>
                 </motion.div>

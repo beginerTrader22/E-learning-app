@@ -1,26 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-
 import BuildForm from "./BuildForm";
-
+import { IoMdArrowRoundBack } from "react-icons/io";
 const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("edit");
   const navigate = useNavigate();
 
   return (
-    <div className="p-4">
+    <div className="dashboard-container">
       {id ? (
-        <>
-          <h2 className="text-2xl font-bold mb-4">Edit Build</h2>
-          <button className="btn mb-4" onClick={() => navigate("/my-builds")}>
-            Back to Builds
-          </button>
+        <div className="edit-build-container">
+          <div className="edit-build-header">
+            <h2 className="edit-build-title">Edit Build</h2>
+            <button
+              className="back-button"
+              onClick={() => navigate("/my-builds")}
+            >
+              <IoMdArrowRoundBack />
+              Back to Builds
+            </button>
+          </div>
           <BuildForm editId={id} />
-        </>
+        </div>
       ) : (
-        <div className="p-4">
-          <h2 className="text-2xl font-bold mb-4">Create a New PC Build</h2>
+        <div className="new-build-container">
+          <h2 className="new-build-title">Create a New PC Build</h2>
           <BuildForm />
         </div>
       )}

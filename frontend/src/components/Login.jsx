@@ -1,12 +1,8 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSignInAlt } from "react-icons/fa";
-
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
-import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useLoginMutation } from "../store/api/userApi";
 
@@ -57,19 +53,21 @@ const Login = () => {
   };
 
   return (
-    <>
-      <section className="heading">
-        <h1> {<FaSignInAlt />} Login</h1>
-        <p>Please Log In</p>
-      </section>
+    <div className="auth-container">
+      <div className="auth-header">
+        <h1 className="auth-title">
+          <FaSignInAlt className="auth-icon" /> Login
+        </h1>
+        <p className="auth-subtitle">Please Log In</p>
+      </div>
 
-      <section className="form">
-        <form onSubmit={onSubmit}>
+      <div className="auth-form-container">
+        <form className="auth-form" onSubmit={onSubmit}>
           <div className="form-group">
             <input
               required
               type="email"
-              className="form-control"
+              className="form-input"
               id="email"
               name="email"
               value={email}
@@ -81,7 +79,7 @@ const Login = () => {
             <input
               required
               type="password"
-              className="form-control"
+              className="form-input"
               id="password"
               name="password"
               value={password}
@@ -94,14 +92,14 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn btn-block"
+              className="submit-button"
             >
-              {isLoading ? "Please wait" : "Login "}
+              {isLoading ? "Please wait..." : "Login"}
             </button>
           </div>
         </form>
-      </section>
-    </>
+      </div>
+    </div>
   );
 };
 

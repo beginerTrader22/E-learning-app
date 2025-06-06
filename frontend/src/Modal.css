@@ -23,7 +23,9 @@
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
+  font-size: 15px;
   cursor: pointer;
+  font-family: var(--font-secondary);
   margin-top: 10px;
 }
 
@@ -71,17 +73,19 @@
 }
 
 .compatibility-info {
+  overflow: hidden;
+  padding: 15px;
+  padding-bottom: 0;
   margin-top: 10px;
-  font-size: 0.9em;
-  color: #666;
+  font-size: 16px;
+  background-color: #757373;
+  color: white;
 }
 
 
 img{
   width: 500px;
 }
-
-
 
 .modal-overlay {
   position: fixed;
@@ -155,11 +159,16 @@ img{
 }
 
 .toggle-notes-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   border: none;
   background-color: #666;
   color: white;
   cursor: pointer;
   padding-block: 7px;
+  font-size: 16px;
+  font-weight: bolder;
   padding-inline: 10px;
   margin-top: 8px;
   border-radius: 4px;
@@ -167,19 +176,6 @@ img{
 
 .toggle-notes-btn:hover {
  background-color: rgb(39, 177, 73);
-}
-
-.compatibility-info {
-  overflow: hidden;
-  margin-top: 8px;
-  background: #f8f8f8;
-  border-radius: 4px;
-  padding: 0 8px;
-}
-
-.compatibility-info ul {
-  padding-left: 20px;
-  margin: 8px 0;
 }
 
 .close-btn {
