@@ -7,6 +7,7 @@ import {
 import { useGetPartsQuery } from "../store/api/partApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import PartSelectionModal from "./PartSelectionModal";
 
 const BuildForm = ({ editId }) => {
   const { data: partsData, isLoading: loadingParts } = useGetPartsQuery();
@@ -15,63 +16,56 @@ const BuildForm = ({ editId }) => {
   const [updateBuild] = useUpdateBuildMutation();
   const navigate = useNavigate();
 
-  const initialParts = {
-    cpu: "",
-    ram: "",
-    gpu: "",
-    ssd: "",
-    motherboard: "",
-    powerSupply: "",
-  };
-
-  const [formParts, setFormParts] = useState(initialParts);
+  const [selectedParts, setSelectedParts] = useState({
+    cpu: null,
+    ram: null,
+    gpu: null,
+    ssd: null,
+    motherboard: null,
+    powerSupply: null,
+  });
   const [originalParts, setOriginalParts] = useState(null);
+  const [activeModal, setActiveModal] = useState(null);
 
   useEffect(() => {
     if (editId && builds) {
       const buildToEdit = builds.find((b) => b._id === editId);
       if (buildToEdit) {
         const normalizedParts = {
-          cpu: buildToEdit.parts.cpu?._id || buildToEdit.parts.cpu || "",
-          ram: buildToEdit.parts.ram?._id || buildToEdit.parts.ram || "",
-          gpu: buildToEdit.parts.gpu?._id || buildToEdit.parts.gpu || "",
-          ssd: buildToEdit.parts.ssd?._id || buildToEdit.parts.ssd || "",
-          motherboard:
-            buildToEdit.parts.motherboard?._id ||
-            buildToEdit.parts.motherboard ||
-            "",
-          powerSupply:
-            buildToEdit.parts.powerSupply?._id ||
-            buildToEdit.parts.powerSupply ||
-            "",
+          cpu: buildToEdit.parts.cpu || null,
+          ram: buildToEdit.parts.ram || null,
+          gpu: buildToEdit.parts.gpu || null,
+          ssd: buildToEdit.parts.ssd || null,
+          motherboard: buildToEdit.parts.motherboard || null,
+          powerSupply: buildToEdit.parts.powerSupply || null,
         };
-        setFormParts(normalizedParts);
+        setSelectedParts(normalizedParts);
         setOriginalParts(normalizedParts);
       }
-    } else {
-      setFormParts(initialParts);
-      setOriginalParts(null);
     }
   }, [editId, builds]);
 
-  // Check if formParts equals originalParts
   const isFormUnchanged = () => {
     if (!originalParts) return false;
-    return Object.keys(formParts).every(
-      (key) => formParts[key] === originalParts[key]
+    return Object.keys(selectedParts).every(
+      (key) => selectedParts[key]?._id === originalParts[key]?._id
     );
   };
 
-  const handleChange = (e) => {
-    setFormParts({ ...formParts, [e.target.name]: e.target.value });
+  const handlePartSelect = (partType, part) => {
+    setSelectedParts((prev) => ({
+      ...prev,
+      [partType]: part,
+    }));
+    setActiveModal(null);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate all parts selected
-    for (const key of Object.keys(formParts)) {
-      if (!formParts[key]) {
+    for (const key of Object.keys(selectedParts)) {
+      if (!selectedParts[key]) {
         toast.error(`Please select a ${key}`);
         return;
       }
@@ -83,13 +77,16 @@ const BuildForm = ({ editId }) => {
       return;
     }
 
-    const buildData = { parts: formParts };
+    const buildData = {
+      parts: Object.fromEntries(
+        Object.entries(selectedParts).map(([key, part]) => [key, part._id])
+      ),
+    };
 
     try {
       if (editId) {
         await updateBuild({ id: editId, data: buildData }).unwrap();
         toast.success("Build updated");
-
         setTimeout(() => {
           navigate(`/my-builds?updated=${editId}`);
         }, 500);
@@ -98,8 +95,6 @@ const BuildForm = ({ editId }) => {
         toast.success("Build created");
         navigate(`/my-builds`);
       }
-      setFormParts(initialParts);
-      setOriginalParts(null);
     } catch (err) {
       console.error("Build API error:", err);
       toast.error(err.data?.message || "Something went wrong");
@@ -108,30 +103,77 @@ const BuildForm = ({ editId }) => {
 
   if (loadingParts) return <p>Loading parts...</p>;
 
-  const renderSelect = (label, name) => (
-    <div>
-      <label>{label}</label>
-      <select name={name} value={formParts[name]} onChange={handleChange}>
-        <option value="">Select {label}</option>
-        {partsData?.[name]?.map((part) => (
-          <option key={part._id} value={part._id}>
-            {part.name}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
+  const partTypes = [
+    { key: "cpu", name: "CPU" },
+    { key: "motherboard", name: "Motherboard" },
+    { key: "ram", name: "RAM" },
+    { key: "gpu", name: "GPU" },
+    { key: "ssd", name: "SSD" },
+    { key: "powerSupply", name: "Power Supply" },
+  ];
 
   return (
-    <form onSubmit={handleSubmit}>
-      {renderSelect("CPU", "cpu")}
-      {renderSelect("RAM", "ram")}
-      {renderSelect("GPU", "gpu")}
-      {renderSelect("SSD", "ssd")}
-      {renderSelect("Motherboard", "motherboard")}
-      {renderSelect("Power Supply", "powerSupply")}
-      <button type="submit">{editId ? "Update" : "Create"} Build</button>
-    </form>
+    <div className="build-form-container">
+      <form onSubmit={handleSubmit} className="build-form">
+        <div className="parts-grid">
+          {partTypes.map(({ key, name }) => (
+            <div key={key} className="part-card">
+              <h3>{name}</h3>
+              {selectedParts[key] ? (
+                <div className="selected-part">
+                  <img
+                    src={selectedParts[key].image || "/default-part.png"}
+                    alt={selectedParts[key].name}
+                    className="part-image"
+                  />
+                  <p>{selectedParts[key].name}</p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveModal(key)}
+                    className="change-btn"
+                  >
+                    Change
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setActiveModal(key)}
+                  className="select-btn"
+                >
+                  Select {name}
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" className="submit-btn">
+            {editId ? "Update Build" : "Create Build"}
+          </button>
+          {editId && (
+            <button
+              type="button"
+              onClick={() => navigate("/my-builds")}
+              className="cancel-btn"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+      </form>
+
+      {activeModal && partsData && (
+        <PartSelectionModal
+          partType={activeModal}
+          parts={partsData[activeModal]}
+          onSelect={(part) => handlePartSelect(activeModal, part)}
+          onClose={() => setActiveModal(null)}
+          selectedPart={selectedParts[activeModal]}
+        />
+      )}
+    </div>
   );
 };
 

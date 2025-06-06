@@ -6,7 +6,7 @@ dotenv.config();
 
 const pcParts = {
   cpu: [
-    { _id: 'cpu1', name: 'Intel Core i7-12700K', scoreValue: 30, compatibleWith: { motherboard: ['LGA1700'] } },
+    { _id: 'cpu1', name: 'Intel Core i7-12700K', scoreValue: 30, compatibleWith: { motherboard: ['LGA1700'] } }, 
     { _id: 'cpu2', name: 'AMD Ryzen 7 5800X', scoreValue: 28, compatibleWith: { motherboard: ['AM4'] } },
     { _id: 'cpu3', name: 'Intel Core i5-12600K', scoreValue: 25, compatibleWith: { motherboard: ['LGA1700'] } },
   ],
