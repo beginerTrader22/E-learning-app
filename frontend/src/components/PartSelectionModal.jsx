@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const PartSelectionModal = ({
   partType,
@@ -22,7 +23,7 @@ const PartSelectionModal = ({
     const handleImageLoad = () => {
       loadedCount++;
       if (loadedCount === totalImages) {
-        setImagesLoaded(true);
+        setTimeout(() => setImagesLoaded(true), 300); // Small delay for smoothness
       }
     };
 
@@ -41,26 +42,67 @@ const PartSelectionModal = ({
     }));
   };
 
-  const renderCompatibilityNotes = (part) => {
-    if (!expandedNotes[part._id]) return null;
+  // Animation variants
+  const modalVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        damping: 25,
+        stiffness: 500,
+      },
+    },
+    exit: { opacity: 0, y: 20 },
+  };
 
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.05,
+        duration: 0.3,
+      },
+    }),
+  };
+
+  const notesVariants = {
+    hidden: { height: 0, opacity: 0 },
+    visible: {
+      height: "auto",
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+      },
+    },
+    exit: { height: 0, opacity: 0 },
+  };
+
+  const renderCompatibilityNotes = (part) => {
     const staticHints = {
       ram: "Min 16GB recommended",
       ssd: "Min 500gb recommended",
-      powerSupply: "Min 650 wats recomended ",
+      powerSupply: "Min 650 wats recommended",
     };
 
     const hasDynamicCompatibility =
       part.compatibleWith && Object.keys(part.compatibleWith).length > 0;
 
     return (
-      <div className="compatibility-info">
+      <motion.div
+        className="compatibility-info"
+        variants={notesVariants}
+        initial="hidden"
+        animate={expandedNotes[part._id] ? "visible" : "hidden"}
+        exit="hidden"
+      >
         <p>Compatibility Notes:</p>
         <ul>
-          {/* Static hints for RAM and PSU */}
           {staticHints[partType] && <li>{staticHints[partType]}</li>}
-
-          {/* Dynamic compatibility info */}
           {hasDynamicCompatibility && (
             <>
               {partType === "cpu" && (
@@ -75,11 +117,9 @@ const PartSelectionModal = ({
                   )}
                 </>
               )}
-
               {partType === "motherboard" && part.compatibleWith.cpu && (
                 <li>CPUs: {part.compatibleWith.cpu.join(", ")}</li>
               )}
-
               {partType === "gpu" && (
                 <>
                   {part.compatibleWith.powerSupply?.minWattage && (
@@ -95,57 +135,97 @@ const PartSelectionModal = ({
             </>
           )}
         </ul>
-      </div>
+      </motion.div>
     );
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="part-modal">
-        <div className="modal-header">
-          <h2>Select {partType}</h2>
-          <button onClick={onClose} className="close-btn">
+    <AnimatePresence>
+      <motion.div
+        className="modal-overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        <motion.div
+          className="part-modal"
+          variants={modalVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
+          <motion.button
+            onClick={onClose}
+            className="close-btn"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
             &times;
-          </button>
-        </div>
-
-        {!imagesLoaded ? (
-          <div className="loading-content">Loading parts...</div>
-        ) : (
-          <div className="parts-list">
-            {parts.map((part) => (
-              <div
-                key={part._id}
-                className={`part-item ${
-                  selectedPart?._id === part._id ? "selected" : ""
-                }`}
-                onClick={() => onSelect(part)}
-              >
-                <img
-                  src={part.image || "/default-part.png"}
-                  alt={part.name}
-                  className="part-image"
-                />
-                <div className="part-info">
-                  <h3>{part.name}</h3>
-                  <p>Score: {part.scoreValue}</p>
-                  <button
-                    className="toggle-notes-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleNotes(part._id);
-                    }}
-                  >
-                    {expandedNotes[part._id] ? "Hide Hints" : "Show Hints"}
-                  </button>
-                  {renderCompatibilityNotes(part)}
-                </div>
-              </div>
-            ))}
+          </motion.button>
+          <div className="modal-header">
+            <h2>Select {partType}</h2>
           </div>
-        )}
-      </div>
-    </div>
+
+          {!imagesLoaded ? (
+            <motion.div
+              className="loading-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="loading-spinner"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              />
+              <p>Loading parts...</p>
+            </motion.div>
+          ) : (
+            <div className="parts-list">
+              {parts.map((part, index) => (
+                <motion.div
+                  key={part._id}
+                  className={`part-item ${
+                    selectedPart?._id === part._id ? "selected" : ""
+                  }`}
+                  onClick={() => onSelect(part)}
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={index}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <motion.img
+                    src={part.image || "/default-part.png"}
+                    alt={part.name}
+                    className="part-image"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: index * 0.05 + 0.2 }}
+                  />
+                  <div className="part-info">
+                    <h3>{part.name}</h3>
+                    <p>Score: {part.scoreValue}</p>
+                    <motion.button
+                      className="toggle-notes-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleNotes(part._id);
+                      }}
+                    >
+                      {expandedNotes[part._id] ? "Hide Hints" : "Show Hints"}
+                    </motion.button>
+                    {renderCompatibilityNotes(part)}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
