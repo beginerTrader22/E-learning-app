@@ -23,7 +23,7 @@ const Header = () => {
           Krijo nje Kompiuter te Ri
         </Link>
       </div>
-      <h2>Ndertuesi i kompiuterave</h2>
+      <h2 className="page-title">Ndertuesi i kompiuterave</h2>
       <nav className="header-nav">
         <ul className="nav-list">
           {user ? (

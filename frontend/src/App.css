@@ -98,15 +98,26 @@ button  {
 .app-header {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: 20px;
   align-items: center;
   padding: 1rem 2rem;
   background: #2d3748;
   color: white;
 }
 
+.header-nav{
+  display: flex;
+  justify-content: space-between;
+}
+.page-title{
+  text-align: center;
+}
+
 .header-logo .logo-link {
   color: white;
   font-size: 17px;
+  display: block;
   padding: 10px 25px;
   border-radius: 10px;
   font-weight: bold;
@@ -124,6 +135,7 @@ button  {
 .nav-list {
   display: flex;
   list-style: none;
+  justify-content: space-between;
   gap: 1.5rem;
 }
 
@@ -237,4 +249,50 @@ button  {
 .submit-button:disabled {
   background: #a0aec0;
   cursor: not-allowed;
+}
+
+
+@media only screen and (max-width: 660px) {
+.header-nav{
+width: 100%;
+}
+
+.header-nav .nav-list{
+width: 100%;
+}
+
+.page-title{
+  font-size: 16px;
+
+}
+.edit-build-container, .new-build-container{
+  padding-inline: 0;
+}
+.build-form-container{
+  padding-inline: 16px;
+}
+
+.parts-grid{
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))
+}
+
+.build-form{
+  padding-inline: 10px;
+}
+
+.dashboard-container{
+  padding-inline: 10px;
+}
+
+.part-card{
+  padding: 10px;
+}
+.header-logo .logo-link{
+  padding: 8px;
+  font-size: 15px;
+}
+
+.edit-build-title, .new-build-title{
+  font-size: 20px;
+}
 }
