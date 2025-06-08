@@ -16,6 +16,11 @@ app.use(cors())
 app.use('/pc/users' , require('./routes/studentRoutes.js'))
 app.use('/pc/builds', require('./routes/buildRoutes'));
 app.use('/pc/parts', require('./routes/partRoutes'));
+
+app.get('/pc', (req, res) => {
+  res.json({ message: 'PC Builder API is working' });
+});
+
 app.use(errorHandler)
 app.listen(port, ()=> console.log(`server is listening on ${port}`));
 
