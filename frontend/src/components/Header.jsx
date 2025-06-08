@@ -20,17 +20,17 @@ const Header = () => {
     <header className="app-header">
       <div className="header-logo">
         <Link to="/" className="logo-link">
-          Krijo nje Kompiuter te Ri
+          Krijo një Kompjuter të Ri
         </Link>
       </div>
-      <h2 className="page-title">Ndertuesi i kompiuterave</h2>
+      <h2 className="page-title">Ndërtuesi i kompjuterave</h2>
       <nav className="header-nav">
         <ul className="nav-list">
           {user ? (
             <>
               <li className="nav-item">
                 <Link to="/my-builds" className="nav-link">
-                  Kompiuterat e Mi
+                  Kompjuterat e Mi
                 </Link>
               </li>
               <li className="nav-item">

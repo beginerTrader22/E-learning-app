@@ -119,7 +119,7 @@ const PartSelectionModal = ({
               )}
               {partType === "motherboard" && part.compatibleWith.cpu && (
                 <li>
-                  Procesore qe pershtaten {part.compatibleWith.cpu.join(", ")}
+                  Procesorë qe pershtaten {part.compatibleWith.cpu.join(", ")}
                 </li>
               )}
               {partType === "gpu" && (
@@ -131,7 +131,7 @@ const PartSelectionModal = ({
                     </li>
                   )}
                   {part.compatibleWith.cpu && (
-                    <li>Procesore: {part.compatibleWith.cpu.join(", ")}</li>
+                    <li>Procesorë: {part.compatibleWith.cpu.join(", ")}</li>
                   )}
                 </>
               )}
@@ -167,7 +167,7 @@ const PartSelectionModal = ({
             &times;
           </motion.button>
           <div className="modal-header">
-            <h2>Zgjidh {partType}</h2>
+            <h2>Zgjidh pjesën</h2>
           </div>
 
           {!imagesLoaded ? (
@@ -210,7 +210,7 @@ const PartSelectionModal = ({
                   />
                   <div className="part-info">
                     <h3>{part.name}</h3>
-                    <p>Piket: {part.scoreValue}</p>
+                    <p>Pikët: {part.scoreValue}</p>
 
                     <motion.button
                       className="toggle-notes-btn"
@@ -222,8 +222,8 @@ const PartSelectionModal = ({
                       {" "}
                       <FaLightbulb />
                       {expandedNotes[part._id]
-                        ? "Fshih pjeset qe pershtaten"
-                        : "Trego pjeset qe pershtaten"}
+                        ? "Fshih pjesët që përshtaten"
+                        : "Trego pjesët që përshtaten"}
                     </motion.button>
 
                     {renderCompatibilityNotes(part)}

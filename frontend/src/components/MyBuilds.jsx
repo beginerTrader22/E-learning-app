@@ -89,8 +89,8 @@ const MyBuilds = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <h2>Nuk keni krijuar asnje kompiuter akoma</h2>
-        <p>Fillo duke krijuar kompiuterin tend te pare</p>
+        <h2>Nuk keni krijuar asnjë kompiuter akoma</h2>
+        <p>Fillo duke krijuar kompiuterin tënd të parë</p>
         <button onClick={() => navigate("/")} className="btn-primary">
           Krijo Kompiuter
         </button>
@@ -106,7 +106,7 @@ const MyBuilds = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        Mire se vini, {user?.name || "User"}!
+        Mirë se vini, {user?.name || "User"}!
       </motion.h2>
 
       <motion.div
@@ -145,7 +145,7 @@ const MyBuilds = () => {
 
               <div className="build-content">
                 <div className="build-score">
-                  <span>Piket: </span>
+                  <span>Pikët: </span>
                   <span className="score-value">{build.score}</span>
                 </div>
 
@@ -170,7 +170,7 @@ const MyBuilds = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                   >
-                    Buildi u perditesua!
+                    Buildi u perditësua!
                   </motion.div>
                 )}
 
@@ -183,7 +183,7 @@ const MyBuilds = () => {
                     disabled={!imagesLoaded[build._id]}
                   >
                     {imagesLoaded[build._id]
-                      ? "Ndrysho pjeset"
+                      ? "Ndrysho pjesët"
                       : "Duke u ngarkuar..."}
                   </motion.button>
                   <motion.button

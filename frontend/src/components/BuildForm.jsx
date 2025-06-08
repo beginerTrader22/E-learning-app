@@ -166,12 +166,12 @@ const BuildForm = ({ editId }) => {
   };
 
   const partTypes = [
-    { key: "cpu", name: "Procesori" },
-    { key: "motherboard", name: "MotherBordi" },
-    { key: "ram", name: "Memorja (RAM)" },
-    { key: "gpu", name: "Karta Grafike" },
-    { key: "ssd", name: "Magazina (SSD)" },
-    { key: "powerSupply", name: "Ushqyesi" },
+    { key: "cpu", name: "Procesori (CPU)", name2: "Procesorin" },
+    { key: "motherboard", name: "MotherBordi", name2: "MotherBordin" },
+    { key: "ram", name: "Memorja (RAM)", name2: "Memorjen" },
+    { key: "gpu", name: "Karta Grafike (GPU)", name2: "Kartën Grafike" },
+    { key: "ssd", name: "Magazina (SSD)", name2: "Magazinën" },
+    { key: "powerSupply", name: "Ushqyesi (PowerSupply)", name2: "Ushqyesin" },
   ];
 
   if (loadingParts) {
@@ -203,7 +203,7 @@ const BuildForm = ({ editId }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.3 }}
         >
-          {partTypes.map(({ key, name }, index) => (
+          {partTypes.map(({ key, name, name2 }, index) => (
             <motion.div
               key={key}
               className="part-card"
@@ -245,7 +245,7 @@ const BuildForm = ({ editId }) => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    Ndrysho Pjesen
+                    Ndrysho Pjesën
                   </motion.button>
                 </motion.div>
               ) : (
@@ -256,7 +256,7 @@ const BuildForm = ({ editId }) => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Zgjidh {name}
+                  Zgjidh {name2}
                 </motion.button>
               )}
             </motion.div>
@@ -284,7 +284,7 @@ const BuildForm = ({ editId }) => {
             ) : editId ? (
               "Perditeso Ndryshimet"
             ) : (
-              "Krijo Kompiuter"
+              "Krijo Kompjuter"
             )}
           </motion.button>
           {editId && (
