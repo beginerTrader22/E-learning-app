@@ -295,4 +295,29 @@ width: 100%;
 .edit-build-title, .new-build-title{
   font-size: 20px;
 }
+
+.welcome-heading{
+  font-size: 23px;
+}
+
+.app-header{
+  padding-inline: 15px;
+}
+
+}
+
+
+@media only screen and (max-width: 425px) {
+
+.builds-grid{
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+.builds-container{
+  padding: 15px;
+}
+
+.btn-edit, .btn-delete{
+  padding: 5px;
+  font-size: 15px;
+}
 }

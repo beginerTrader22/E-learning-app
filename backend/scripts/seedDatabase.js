@@ -116,7 +116,7 @@ gpu: [
     _id: 'gpu1',
     name: 'NVIDIA RTX 3080',
     scoreValue: 40,
-    image: 'https://images.evga.com/products/gallery/png/10G-P5-3897-RX_LG_1.png',
+    image: 'https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/ampere/rtx-3080/geforce-rtx-3080-shop-600-p@2x.png',
     compatibleWith: {
       powerSupply: { minWattage: 750 },
       cpu: ['Intel Core i7-12700K', 'Intel Core i9-12900K']
