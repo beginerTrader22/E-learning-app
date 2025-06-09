@@ -34,6 +34,11 @@ const Header = () => {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/other-builds" className="nav-link">
+                  Kompjuterat e studentëve të tjerë
+                </Link>
+              </li>
+              <li className="nav-item">
                 <button className="logout-button" onClick={handleLogout}>
                   <FaSignOutAlt className="nav-icon" /> Dil
                 </button>

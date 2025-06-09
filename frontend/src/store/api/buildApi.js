@@ -16,6 +16,10 @@ export const buildApi = createApi({
       query: () => '/builds',
       providesTags: ['Builds'],
     }),
+    getOtherUsersBuilds: builder.query({
+      query: () => '/builds/others',
+      providesTags: ['OtherBuilds'],
+}),
     createBuild: builder.mutation({
       query: (data) => ({
         url: '/builds',
@@ -46,5 +50,6 @@ export const {
   useGetBuildsQuery,
   useCreateBuildMutation,
   useDeleteBuildMutation,
-  useUpdateBuildMutation
+  useUpdateBuildMutation,
+  useGetOtherUsersBuildsQuery
 } = buildApi;

@@ -26,6 +26,8 @@
   border-radius: 8px;
   padding: 1.5rem;
   transition: all 0.3s ease;
+  position: relative;
+  padding-block: 12px;
 }
 
 .part-card h3 {

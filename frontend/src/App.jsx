@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Header from "./components/Header";
 import RequireAuth from "./components/RequireAuth";
+import OtherUsersBuilds from "./components/OtherUsersBuilds";
 import MyBuilds from "./components/MyBuilds";
 
 import { ToastContainer } from "react-toastify";
@@ -23,6 +24,14 @@ function App() {
               element={
                 <RequireAuth>
                   <Dashboard />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/other-builds"
+              element={
+                <RequireAuth>
+                  <OtherUsersBuilds />
                 </RequireAuth>
               }
             />

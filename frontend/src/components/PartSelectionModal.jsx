@@ -211,7 +211,6 @@ const PartSelectionModal = ({
                   <div className="part-info">
                     <h3>{part.name}</h3>
                     <p>Pikët: {part.scoreValue}</p>
-
                     <motion.button
                       className="toggle-notes-btn"
                       onClick={(e) => {

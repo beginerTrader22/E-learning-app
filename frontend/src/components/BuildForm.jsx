@@ -10,7 +10,8 @@ import { useNavigate } from "react-router-dom";
 import PartSelectionModal from "./PartSelectionModal";
 import { motion, AnimatePresence } from "framer-motion";
 import "../BuildForm.css";
-
+import { FaInfoCircle } from "react-icons/fa";
+import { IoCloseCircle } from "react-icons/io5";
 const BuildForm = ({ editId }) => {
   const { data: partsData, isLoading: loadingParts } = useGetPartsQuery();
   const { data: builds } = useGetBuildsQuery();
@@ -51,12 +52,24 @@ const BuildForm = ({ editId }) => {
       const buildToEdit = builds.find((b) => b._id === editId);
       if (buildToEdit) {
         const normalizedParts = {
-          cpu: buildToEdit.parts.cpu || null,
-          ram: buildToEdit.parts.ram || null,
-          gpu: buildToEdit.parts.gpu || null,
-          ssd: buildToEdit.parts.ssd || null,
-          motherboard: buildToEdit.parts.motherboard || null,
-          powerSupply: buildToEdit.parts.powerSupply || null,
+          cpu: buildToEdit.parts.cpu
+            ? { ...buildToEdit.parts.cpu, showDescription: false }
+            : null,
+          ram: buildToEdit.parts.ram
+            ? { ...buildToEdit.parts.ram, showDescription: false }
+            : null,
+          gpu: buildToEdit.parts.gpu
+            ? { ...buildToEdit.parts.gpu, showDescription: false }
+            : null,
+          ssd: buildToEdit.parts.ssd
+            ? { ...buildToEdit.parts.ssd, showDescription: false }
+            : null,
+          motherboard: buildToEdit.parts.motherboard
+            ? { ...buildToEdit.parts.motherboard, showDescription: false }
+            : null,
+          powerSupply: buildToEdit.parts.powerSupply
+            ? { ...buildToEdit.parts.powerSupply, showDescription: false }
+            : null,
         };
         setSelectedParts(normalizedParts);
         setOriginalParts(normalizedParts);
@@ -85,6 +98,21 @@ const BuildForm = ({ editId }) => {
     return Object.keys(selectedParts).every(
       (key) => selectedParts[key]?._id === originalParts[key]?._id
     );
+  };
+
+  const closeAllDescriptions = () => {
+    setSelectedParts((prev) => {
+      const updatedParts = { ...prev };
+      Object.keys(updatedParts).forEach((key) => {
+        if (updatedParts[key]) {
+          updatedParts[key] = {
+            ...updatedParts[key],
+            showDescription: false,
+          };
+        }
+      });
+      return updatedParts;
+    });
   };
 
   const handlePartSelect = (partType, part) => {
@@ -182,7 +210,6 @@ const BuildForm = ({ editId }) => {
       </div>
     );
   }
-
   return (
     <motion.div
       className="build-form-container"
@@ -213,6 +240,7 @@ const BuildForm = ({ editId }) => {
               whileHover={{ scale: 1.02 }}
             >
               <h3>{name}</h3>
+
               {selectedParts[key] ? (
                 <motion.div
                   className="selected-part"
@@ -238,9 +266,69 @@ const BuildForm = ({ editId }) => {
                     />
                   )}
                   <p>{selectedParts[key].name}</p>
+
+                  {selectedParts[key].description && (
+                    <div className="description-container">
+                      <motion.button
+                        type="button"
+                        className="description-toggle-btn"
+                        style={{
+                          position: "absolute",
+                          top: 16,
+                          right: 15,
+                          zIndex: 2,
+                          background: "transparent",
+                          border: "none",
+                          cursor: "pointer",
+                        }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedParts((prev) => ({
+                            ...prev,
+                            [key]: {
+                              ...prev[key],
+                              showDescription: !prev[key]?.showDescription,
+                            },
+                          }));
+                        }}
+                      >
+                        {selectedParts[key]?.showDescription ? (
+                          <IoCloseCircle
+                            style={{ fontSize: "1.5rem", color: "white" }}
+                          /> // Your close icon
+                        ) : (
+                          <FaInfoCircle style={{ fontSize: "1.5rem" }} /> // Your info icon
+                        )}
+                      </motion.button>
+
+                      {/* Animated description panel */}
+                      {selectedParts[key]?.showDescription && (
+                        <motion.div
+                          className="part-description"
+                          initial={{ opacity: 0, y: -20, height: 0 }}
+                          animate={{ opacity: 1, y: 0, height: "100%" }}
+                          exit={{ opacity: 0, y: -20, height: 0 }}
+                          transition={{ type: "spring", damping: 25 }}
+                          style={{
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div className="description-content">
+                            <h3>Informacion</h3>
+                            {selectedParts[key].description}
+                          </div>
+                        </motion.div>
+                      )}
+                    </div>
+                  )}
                   <motion.button
                     type="button"
-                    onClick={() => setActiveModal(key)}
+                    onClick={() => {
+                      closeAllDescriptions();
+                      setActiveModal(key);
+                    }}
                     className="change-btn"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -251,7 +339,10 @@ const BuildForm = ({ editId }) => {
               ) : (
                 <motion.button
                   type="button"
-                  onClick={() => setActiveModal(key)}
+                  onClick={() => {
+                    closeAllDescriptions();
+                    setActiveModal(key);
+                  }}
                   className="select-btn"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

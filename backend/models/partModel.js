@@ -4,6 +4,7 @@ const partSchema = mongoose.Schema({
   _id: { type: String }, // <-- ADD THIS LINE
   type: { type: String, required: true, enum: ['cpu', 'ram', 'gpu', 'ssd', 'motherboard', 'powerSupply'] },
   name: { type: String, required: true },
+  description: { type: String, default: '' },
   compatibleWith: {
     cpu: [{ type: String }],
     gpu: [{ type: String }],

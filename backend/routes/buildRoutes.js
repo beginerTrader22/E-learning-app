@@ -5,10 +5,12 @@ const {
   createBuild,
   getBuilds,
   deleteBuild,
-  updateBuild
+  updateBuild,
+  getOtherUsersBuilds
 } = require('../controllers/buildController');
 
 router.route('/').post(protect, createBuild).get(protect, getBuilds);
 router.route('/:id').delete(protect, deleteBuild).put(protect, updateBuild);
+router.get('/others', protect, getOtherUsersBuilds);
 
 module.exports = router;

@@ -65,6 +65,14 @@ const checkCompatibility = async (parts) => {
   };
 };
 
+const getOtherUsersBuilds = asyncHandler(async (req, res) => {
+  const builds = await Build.find({ user: { $ne: req.user.id } })
+    .populate('parts.cpu parts.ram parts.gpu parts.ssd parts.motherboard parts.powerSupply')
+    .populate('user', 'name');
+  
+  res.status(200).json(builds);
+});
+
 const calculateScore = async (parts) => {
   const partDocs = await Part.find({ _id: { $in: Object.values(parts) } });
   return partDocs.reduce((score, part) => score + (part.scoreValue || 0), 0);
@@ -137,4 +145,4 @@ const updateBuild = asyncHandler(async (req, res) => {
   res.status(200).json(updatedBuild);
 });
 
-module.exports = { createBuild, getBuilds, deleteBuild, updateBuild };
+module.exports = { createBuild, getBuilds, deleteBuild, updateBuild, getOtherUsersBuilds };
