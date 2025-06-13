@@ -7,25 +7,35 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import "../MyBuilds.css";
 
 const MyBuilds = () => {
   const { data: builds = [], isLoading, refetch } = useGetBuildsQuery();
   const [deleteBuild] = useDeleteBuildMutation();
   const navigate = useNavigate();
   const [justUpdatedId, setJustUpdatedId] = useState(null);
+  const [updatedPart, setUpdatedPart] = useState(null);
   const [imagesLoaded, setImagesLoaded] = useState({});
   const { user } = useSelector((state) => state.user);
 
   // Check URL param "updated" to highlight build just updated
+  // Check URL param "updated" to highlight build just updated
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const updatedId = params.get("updated");
+    const updatedPartParam = params.get("updatedPart");
+
     if (updatedId) {
       setJustUpdatedId(updatedId);
+      if (updatedPartParam) {
+        // Split the parts by comma to get an array
+        setUpdatedPart(updatedPartParam.split(","));
+      }
+
       setTimeout(() => {
         setJustUpdatedId(null);
+        setUpdatedPart(null);
         params.delete("updated");
+        params.delete("updatedPart");
         const newUrl =
           window.location.pathname +
           (params.toString() ? `?${params.toString()}` : "");
@@ -126,7 +136,6 @@ const MyBuilds = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ delay: index * 0.1, duration: 0.3 }}
-              whileHover={{ scale: 1.02 }}
             >
               {!imagesLoaded[build._id] ? (
                 <div className="image-placeholder">
@@ -155,25 +164,28 @@ const MyBuilds = () => {
                       key={type}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.2 + index * 0.05 }}
+                      transition={{
+                        delay: 0.2 + index * 0.05,
+                        ...(justUpdatedId === build._id && updatedPart === type
+                          ? {
+                              repeat: 3,
+                              repeatType: "reverse",
+                              duration: 0.5,
+                            }
+                          : {}),
+                      }}
+                      className={
+                        justUpdatedId === build._id &&
+                        updatedPart?.includes(type)
+                          ? "part-item highlighted-part"
+                          : "part-item"
+                      }
                     >
                       <span className="part-type">{type.toUpperCase()}:</span>
                       <span className="part-name">{part.name || part}</span>
                     </motion.li>
                   ))}
                 </ul>
-
-                {justUpdatedId === build._id && (
-                  <motion.div
-                    className="update-notification"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    Buildi u perditësua!
-                  </motion.div>
-                )}
-
                 <div className="build-actions">
                   <motion.button
                     onClick={() => handleEdit(build._id)}

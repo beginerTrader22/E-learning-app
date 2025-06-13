@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import PartSelectionModal from "./PartSelectionModal";
 import { motion, AnimatePresence } from "framer-motion";
-import "../BuildForm.css";
+
 import { FaInfoCircle } from "react-icons/fa";
 import { IoCloseCircle } from "react-icons/io5";
 const BuildForm = ({ editId }) => {
@@ -157,7 +157,7 @@ const BuildForm = ({ editId }) => {
 
     // If editing and no change, block update
     if (editId && isFormUnchanged()) {
-      toast.info("Nuk keni bere ndryshime ne kompiuter");
+      toast.info("Nuk keni bere ndryshime ne kompjuter");
       setIsSubmitting(false);
       return;
     }
@@ -171,13 +171,28 @@ const BuildForm = ({ editId }) => {
     try {
       if (editId) {
         await updateBuild({ id: editId, data: buildData }).unwrap();
-        toast.success("Kompiuteri u be update me pjeset e reja");
+        toast.success("Kompjuteri u be update me pjeset e reja");
+
+        const updatedParts = [];
+        if (originalParts) {
+          Object.keys(selectedParts).forEach((key) => {
+            if (selectedParts[key]?._id !== originalParts[key]?._id) {
+              updatedParts.push(key);
+            }
+          });
+        }
         setTimeout(() => {
-          navigate(`/my-builds?updated=${editId}`);
+          navigate(
+            `/my-builds?updated=${editId}${
+              updatedParts.length
+                ? `&updatedPart=${updatedParts.join(",")}`
+                : ""
+            }`
+          );
         }, 500);
       } else {
         await createBuild(buildData).unwrap();
-        toast.success("Kompiuteri u krijua");
+        toast.success("Kompjuteri u krijua");
         navigate(`/my-builds`);
       }
     } catch (err) {
@@ -237,7 +252,6 @@ const BuildForm = ({ editId }) => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + index * 0.05, duration: 0.3 }}
-              whileHover={{ scale: 1.02 }}
             >
               <h3>{name}</h3>
 
@@ -272,15 +286,6 @@ const BuildForm = ({ editId }) => {
                       <motion.button
                         type="button"
                         className="description-toggle-btn"
-                        style={{
-                          position: "absolute",
-                          top: 16,
-                          right: 15,
-                          zIndex: 2,
-                          background: "transparent",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={(e) => {
@@ -297,9 +302,9 @@ const BuildForm = ({ editId }) => {
                         {selectedParts[key]?.showDescription ? (
                           <IoCloseCircle
                             style={{ fontSize: "1.5rem", color: "white" }}
-                          /> // Your close icon
+                          />
                         ) : (
-                          <FaInfoCircle style={{ fontSize: "1.5rem" }} /> // Your info icon
+                          <FaInfoCircle style={{ fontSize: "1.5rem" }} />
                         )}
                       </motion.button>
 

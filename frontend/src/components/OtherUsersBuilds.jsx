@@ -3,7 +3,6 @@ import React from "react";
 import { useGetOtherUsersBuildsQuery } from "../store/api/buildApi";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import "../MyBuilds.css";
 
 const OtherUsersBuilds = () => {
   const { data: builds = [], isLoading } = useGetOtherUsersBuildsQuery();
@@ -57,7 +56,6 @@ const OtherUsersBuilds = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ delay: index * 0.1, duration: 0.3 }}
-              whileHover={{ scale: 1.02 }}
             >
               <div className="build-owner">
                 <span>Krijuar nga: </span>

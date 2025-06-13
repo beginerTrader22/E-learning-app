@@ -23,7 +23,7 @@ const Header = () => {
           Krijo një Kompjuter të Ri
         </Link>
       </div>
-      <h2 className="page-title">Ndërtuesi i kompjuterave</h2>
+
       <nav className="header-nav">
         <ul className="nav-list">
           {user ? (

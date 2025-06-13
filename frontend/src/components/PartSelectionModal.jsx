@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaLightbulb } from "react-icons/fa";
-import "../Modal.css";
 
 const PartSelectionModal = ({
   partType,
