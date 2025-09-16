@@ -27,8 +27,8 @@ Add .env file on backend root:
 
 NODE_ENV = development
 PORT = 8000
-MONGO_URI = mongodb+srv://admin:admin@pcbuilder.uhnfian.mongodb.net/PcBuilder
-JWT_SECRET = admin
+MONGO_URI = the uri
+JWT_SECRET = the secret 
 
 Add .env file on frontend root
 VITE_API_URL=http://localhost:8000
