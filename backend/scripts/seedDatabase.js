@@ -320,7 +320,7 @@ const pcParts = {
       _id: 'psu4',
       name: 'Thermaltake Toughpower GF 750W',
       scoreValue: 17,
-      image: 'https://images.anandtech.com/doci/21073/THERMALTAKE_TOUGHPOWER_GF_A3_750W_05.jpg',
+      image: 'https://www.thermaltake.com/media/catalog/product/cache/cc8b24283b13da6bc2ff91682c03b54b/p/f/pf_750_1.jpg',
       compatibleWith: {},
       description: "Thermaltake Toughpower GF 750W ofron fuqi të mjaftueshme për shumicën e sistemeve gaming. Përputhet mirë me sisteme të mesme për shkak të cilësisë së mirë dhe çmimit të arsyeshëm. Kabllot plotësisht modulare për menaxhim më të mirë të kabllove."
     },
